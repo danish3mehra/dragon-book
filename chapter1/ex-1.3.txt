@@ -1,0 +1,23 @@
+Exercise 1.3.1: Indicate which of the following terms:
+
+	a) imperative
+	b) declarative
+	c) von Neumann
+	d) object-orientated
+	e) functional
+	f) third-generation
+	g) fourth-generation
+	h) scripting
+	
+	apply to which of the following langauges:
+
+	1) C			imperative, von Neumann, functional, third-generation
+	2) C++		imperative, von Neumann, object-orientated, functional, third-generation
+	3) Cobol		imperative, object-orientated, third-generation
+	4) Fortran	imperative, von Neumann, object-orientated, third-generation
+	5) Java		imperative, von Neumann, object-orientated, third-generation
+	6) Lisp		imperative, object-orientated, third-generation
+	7) ML		imperative, object-orientated, functional, third-generation
+	8) Perl		imperative, object-orientated, functional, third-generation, scripting
+	9) Python 	imperative, object-orientated, functional, third-generation, scripting
+	10) VB.		imperative, object-orientated (VB.net), functional, third-generation
