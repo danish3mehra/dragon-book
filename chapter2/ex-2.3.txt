@@ -1,0 +1,73 @@
+Exercise 2.3.1: Construct a syntax-directed translation scheme that translates arithmetic
+	expressions from infix notation into prefix notation in which an operator appears before
+	its operands; e.g., -xy is the prefix notation for x-y.
+	Give annotated parse trees for the inputs 9-5+2 and 9-5*2.
+	
+	expr ->  { print "+" }  expr + term
+	      |  { print "-" }  expr - term
+	      |  term
+	term ->  { print "*" }  term * factor
+	      |  { print "/" }  term / factor
+	      |  factor
+	factor ->  0  { print "0" }
+	factor ->  1  { print "1" }
+	...
+	factor ->  9  { print "9" }
+	factor ->  ( expr )
+
+Exercise 2.3.2: Construct a syntax-directed translation scheme that translates arithmetic
+	expressions from postfix notation into infix notation. Give annotated parse trees for
+	the inputs 95-2* and 952*-.
+	
+	expr ->  expr { print "+" } expr +
+	      |  expr { print "-" } expr -
+	      |  { print "(" } expr { print "*" } expr { print ")" } *
+	      |  { print "(" } expr { print "/" } expr { print ")" } /
+	      |  factor
+
+Exercise 2.3.3: Construct a syntax-directed translation scheme that translates integers
+	into roman numerals.
+
+	// Works up to 4000.
+
+	convert(int i, int pos) {
+		switch (i) {
+			case 0: return "";
+			case 1: return pos == 1 ? "I" : (pos == 2 ? "X" : (pos == 3 ? "C" : "M"));
+			case 2: return pos == 1 ? "II" : (pos == 2 ? "XX" : (pos == 3 ? "CC" : "MM"));
+			case 3: return pos == 1 ? "III" : (pos == 2 ? "XXX" : (pos == 3 ? "CCC" : "MMM"));
+			case 4: return pos == 1 ? "IV" : (pos == 2 ? "XL" : "CD");
+			case 5: return pos == 1 ? "V" : (pos == 2 ? "L" : "D");
+			case 6: return pos == 1 ? "VI" : (pos == 2 ? "LX" : "DC");
+			caes 7: return pos == 1 ? "VII" : (pos == 2 ? "LXX" : "DCC");
+			case 8: return pos == 1 ? "VIII" : (pos == 2 ? "LXXX" : "DCCC");
+			case 9: return pos == 1 ? "IX" : (pos == 2 ? "XC" : "CM");
+		}
+	}
+
+	number ->  { pos = input.length } term
+	term ->  digit { print convert(floor(digit / (10^(pos-1))), --pos) } digits
+	digits ->  digit { print convert(floor(digit / (10^(pos-1))), --pos) } digits
+	        |  ϵ
+
+!Exercise 2.3.4: Construct a syntax-directed translation scheme that translates
+	roman numerals up to 2000 into integers.
+	
+	numeral ->  thousand hundred ten digit { print thousand.v + hundred.v + ten.v + digit.v }
+	c ->  C { hundred.v = 1 }  |  C C { hundred.v = 2 }  |  C C C { hundred.v = 3 }  |  ϵ
+	x ->  X { ten.v = 1 } |  X X { ten.v = 2 }  |  X X X { ten.v = 3 }  |  ϵ
+	i ->  I { digit.v = 1 }  |  I I { digit.v = 2 }  |  I I I { digit.v = 3 }  |  ϵ
+	thousand ->  M { thousand.v = 1 }  |  ϵ
+	hundred ->  c  |  C D { thousand.v = 4 }  |  D c { thousand.v += 5 }  |  C M { thousand.v = 9 }
+	ten ->  x  |  X L { ten.v = 4 }  |  L x { ten.v += 5 }  |  X C { ten.v = 9 }
+	digit ->  i  |  I V { digit.v = 4 }  | V i { digit.v += 5 }  | I X { digit.v = 9 }
+
+Exercise 2.3.5: Construct a syntax-directed translation scheme to translate postfix
+	arithmetic expressions into equivalent prefix arithmetic expressions.
+	
+	expr ->  { print "+" } expr expr +
+	      |  { print "-" } expr expr -
+	      |  { print "*" } expr expr *
+	      |  { print "/" } expr expr /
+	      |  factor
+	
