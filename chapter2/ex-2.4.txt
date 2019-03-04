@@ -1,0 +1,40 @@
+Exercise 2.4.1: Construct recursive-descent parsers, starting with the following grammars:
+
+	a) S ->  + S S  |  - S S  |  a
+	b) S ->  S ( S ) S  |  ϵ
+	c) S ->  0 S 1  |  0 1
+	
+	a)
+	void S() {
+		if (lookahead == '+') {
+			match('+');
+			S();
+			S();
+		} else if (lookahead == '-') {
+			match('-');
+			S();
+			S();
+		} else {
+			match('a');
+		}
+	}
+	
+	b)
+	boolean S() {
+		if (!S()) { /* do nothing */ }
+		if (lookahead != '(') { return false; }
+		match('(');
+		S();
+		match(')');
+		S();
+	}
+	
+	c)
+	void S() {
+		match('0');
+		if (lookahead == '0') {
+			S();
+		}
+		match('1');
+	}
+	
