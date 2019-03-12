@@ -1,0 +1,86 @@
+Exercise 2.6.1: Extend the lexical analyzer in Section 2.6.5 to remove comments
+    defined as follows:
+
+    a) A comment begins with // and includes all characters until the end of that line.
+
+        if (peek == '/') {
+            peek = (char)System.in.read();
+            if (peek != '/') {
+                Token t = new Token('/');
+                peek = ' ';
+                return t;
+            }
+            while (true) {
+                peek = (char)System.in.read();
+                if (peek == '\n' || peek == EOF) break;
+            }
+        }
+
+    b) A comment begins with /* and includes all characters through the next occurrence
+        of the character sequence */.
+
+        if (peek == '/') {
+            peek = (char)System.in.read();
+            if (peek != '*') {
+                Token t = new Token('/');
+                peek = ' ';
+                return t;
+            }
+            while (true) {
+                peek = (char)System.in.read();
+                if (peek == EOF) error("Unfinished multi-line comment.");
+                if (peek == '*') {
+                    peek = (char)System.in.read();
+                    if (peek == '/') break;
+                }
+            }
+        }
+
+Exercise 2.6.2: Extend the lexical analyzer in Section 2.6.5 to recognize the relational
+    operators <, <=, ==, !=, >=, >.
+
+    // Tag.java
+    public static final int LE = 260, EQEQ = 261, NE = 262, GE = 263;
+
+    // Lexer.java
+    if (peek == '<' || peek == '>' || peek == '!' || peek == '=') {
+        char buffer = peek;
+        peek = (char)System.in.read();
+        if (peek == '=') {
+            switch (buffer) {
+            case '<': return new Token(Tag.LE);
+            case '>': return new Token(Tag.GR);
+            case '!': return new Token(Tag.NE);
+            case '=': return new Token(Tag.EQEQ);
+            }
+        } else return new Token(buffer);
+    }
+
+Exercise 2.6.3: Extend the lexical analyzer in Section 2.6.5 to recognize floating point
+    numbers such as 2., 3.14, and .5.
+
+    package lexer;              // File Dec.java
+    public class Dec extends Token {
+        public final float value;
+        public Num(float v) { super(Tag.NUM); value = v; }
+    }
+
+    // Lexer.java
+    if(Character.isDigit(peek) || peek == '.') {
+        String v = "";
+        String mantissa = "";
+        while ( Character.isDigit(peek) ) {
+            v += Character.digit(peek, 10);
+            peek = (char)System.in.read();
+        }
+        if (peek == '.') {
+            while ( Character.isDigit(peek) ) {
+                mantissa += Character.digit(peek, 10);
+                peek = (char)System.in.read();
+            }
+        }
+        if (v.equals("") && mantissa.equals("")) {
+            error("Invalid (empty) number.");
+        }
+        return new Dec(Float.valueOf(v + '.' + mantissa));
+    }
