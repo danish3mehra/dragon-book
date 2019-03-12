@@ -1,0 +1,36 @@
+Exercise 3.1.1: Divide the following C++ program:
+
+    float limitedSquare(x) float x; {
+        /* returns x-squared, but never more than 100 */
+        return (x<=-10.0||x>=10.0)?100:x*x;
+    }
+
+    into appropriate lexemes, using the discussion of Section 3.1.2 as a guide.
+    Which lexemes should get associated lexical values? What should those values be?
+
+	<float> <id,limitedSquare> <lparen> <id,x> <rparen> <float> <id,x> <semicolon> <lcparen>
+		<return> <lparen> <id,x> <leq> <floatingp,-10.0> <condor>
+			<id,x> <geq> <floatingp,10.0> <rparen> <ternaryl> <integer,100> <ternaryr>
+			<id,x> <mul> <id,x> <semicolon>
+	<rcparen>
+
+!Exercise 3.1.2: Tagged languages like HTML or XML are different from conventional
+    programming languages in that the punctuation (tags) are either very numerous
+    (as in HTML) or a user-definable set (as in XML). Further, tags can often have
+    parameters. Suggest how to divide the following HTML document:
+
+    Here is a photo of <B>my house</B>:
+    <P><IMG SRC = "house.gif"><BR>
+    See <A HREF = "morePix.html">More Pictures</A> if you
+    liked that one.<P>
+
+    into appropriate lexemes. Which lexemes should get associated lexical values,
+    and what should those values be?
+
+	<text,Here is a photo of > <openstart,\<B> <openend> <text,my house><close,\</B\>>
+		<text,:>
+	<openstart,\<P> <openend> <openstart,\<IMG > <arg,SRC = "house.gif"> <openend>
+		<openstart,\<BR> <openend>
+	<text,See > <openstart,\<A > <arg,HREF = "morePix.html"> <openend> <text,More Pictures>
+		<close,\</A\>> <text, if you>
+	<text,liked that one.> <openstart,\<P> <openend>
