@@ -1,0 +1,246 @@
+Exercise 3.3.1: Consult the language reference manuals to determine (i) the sets of
+    characters that form the input alphabet (excluding those that may only appear
+    in character strings or comments), (ii) the lexical form of numerical constants,
+    and (iii) the lexical form of identifiers, for each of the following languages:
+        (a) C
+			i) [a-zA-Z0-9_] <>{}()[] +-/*%^ !&|~= ; "' \ ?: # ,.
+			ii) Number: [+-]? (((Integer | Float | Hex | HexFrac | Oct) [fFlL]?) | Bin)
+				Integer: '0' | ([1-9] [0-9]* Exponent?)
+			 	Float: (Integer? '.' Integer) | (Integer '.') Exponent?
+				Exponent: [eE] [+-]? [1-9] [0-9]*
+				Hex: '0' [xX] ('.' HexPart ('p' [+-]? HexPart+)?
+				HexFrac: '0' [xX] ((HexPart? '.' HexPart) | (HexPart '.'))
+				HexPart: [0-9A-Fa-f]+
+				Oct: '0' [0-7]+
+				Bin: '0' [bB] [0-1]+
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+        (b) C++
+			i) [a-zA-Z0-9_] <>{}()[] +-/*%^ !&|~= ; "' \ ?: # ,.
+			ii) Number: [+-]? (((Integer | Float | Hex | HexFrac | Oct) [fFlL]?) | Bin)
+				Integer: '0' | ([1-9] [0-9]* Exponent?)
+			 	Float: (Integer? '.' Integer) | (Integer '.') Exponent?
+				Exponent: [eE] [+-]? [1-9] [0-9]*
+				Hex: '0' [xX] ('.' HexPart ('p' [+-]? HexPart+)?
+				HexPart: [0-9A-Fa-f]+
+				Oct: '0' [0-7]+
+				Bin: '0' [bB] [0-1]+
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+        (c) C#
+			i) [a-zA-Z0-9_] <>{}()[] +-/*%^ !&|~= ; "' \ ?: # ,.
+			ii) Number: Integer | Float | Hex
+				Integer: [0-9]+ [lL]?
+				Float: [0-9]* '.' [0-9]+ Exponent? [fFdDmM]? |
+					   [0-9]+ ([fFdDmM] | Exponent [fFdDmM]?)
+				Exponent: [eE] [+-]? [0-9]+;
+				Hex: '0' [xX] [0-9A-Fa-f]+ [lL]?
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+        (d) Fortran
+			i) [a-zA-Z0-9_] <>{}()[] +-/*% !&|= ; "' \ : # ,.
+			ii) Number: Integer | Float
+				Integer: [0-9]+
+				Float: [0-9]* '.' [0-9]* ([eEdD] [+-]? [0-9]+)?
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+        (e) Java
+			i) [a-zA-Z0-9_] <>{}()[] +-/*%^ !&|~= ; "' \ ?: @ ,.
+			ii)	Number: [+-]? ((Integer | Hex | Oct | Bin) [lL]?)
+				Integer: '0' | ([1-9] ('_'? [0-9])*)
+				Float: (Integer? '.' Integer) | (Integer '.') Exponent?
+				Exponent: [eE] [+-]? [1-9] [0-9]*
+				HexFrac: '0' [xX] ((HexPart? '.' HexPart) | (HexPart '.')) ('p' [+-]? HexPart+)?
+				HexPart: [0-9A-Fa-f]+
+				Hex: '0' [xX] HexPart
+				Oct: '0' [0-7] ('_'? [0-7])*
+				Bin: '0' [bB] [0-1] ('_'? [0-1])*
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+        (f) Lisp
+			// Closure variant chosen
+			i) [a-zA-Z0-9_] {}()[] +-/%^ ~ # ; `"' \ : @ .
+			ii) Number: Integer | Float | Hex | Bin
+				Integer: '-'? [0-9]+ [lLnN]?
+				Float: '-'? ('Infinity' | 'NaN' | ([0-9]+ (('.' [0-9] Exponent?) | Exponent)))
+				Exponent: [eE] [-]? [0-9]+
+				Hex: '0' [xX] [0-9A-F-a-f]+
+				Bin: '0' [bB] [0-1]+
+			iii) [a-zA-Z] [_+\-*'?<>=a-zA-Z0-9]*
+        (g) SQL
+			// SQLite variant chosen
+			i) <>() +-/*% !&|~= ; ,.
+			ii) Number: ([0-9]+ Mantissa?) | Mantissa
+				Mantissa: '.' [0-9]*)? ([eE] [+-]? [0-9]+
+			iii) [_a-zA-Z] [_a-zA-Z0-9]*
+
+!Exercise 3.3.2: Describe the languages denoted by the following regular expressions:
+    a) a(a|b)*a.
+		'a' followed by n>=0 'a's or 'b's and finally another 'a'.
+    b) ((ϵ|a)b*)*.
+		n>=0 repeats of:
+			potentially beginning with an 'a', followed by m>= 0 'b's.
+    c) (a|b)*a(a|b)(a|b).
+		n>=0 'a's or 'b's, followed by an 'a' and finally twice of either an 'a' or a 'b'.
+    d) a*ba*ba*ba*.
+		n>=0 'a's, followed by a 'b' which together are repeated two more times, and finally
+			another of m>=0 'a's.
+    !!e) (aa|bb)*((ab|ba)(aa|bb)*(ab|ba)(aa|bb)*)*.
+		n>=0 'aa's or 'bb's, followed by m>=0 repeats of:
+			an 'ab' or 'ba', followed by l>=0 'aa's or 'bb's, together repeated twice.
+
+Exercise 3.3.3: In a string of length n, how many of the following are there?
+    a) Prefixes.
+		n+1
+    b) Suffixes.
+		n+1
+    c) Proper prefixes.
+		n-1
+    !d) Substring.
+		nCk(n+1,2)
+    !e) Subsequences.
+		Σ(i=0,n)nCk(n,i)
+
+Exercise 3.3.4: Most languages are case sensitive, so keywords can be written only
+    one way, and the regular expressions describing their lexemes are very simple.
+    However, some languages, like SQL, are case insensitive, so a keyword can be
+    written either in lowercase or in uppercase, or in any mixture of cases.
+    Thus, the SQL keyword SELECT can also be written select, Select, or sElEcT,
+    for instance. Show how to write a regular expression for a keyword in a
+    case-insensitive language. Illustrate the idea by writing the expression for
+    "select" in SQL.
+
+	[sS][eE][lL][eE][cC][tT]
+		or by using the \i flag (ignore case),
+	'select'
+
+!Exercise 3.3.5: Write regular definitions for the following languages:
+    a) All strings of lowercase letters that contain the five vowels in order.
+		'aeiou'
+    b) All strings of lowercase letters in which the letters are in ascending
+        lexicographic order.
+		'abcdefghijklmnopqrstuvwxyz'
+    c) Comments, consisting of a string surrounded by /* and */, without an
+        intervening */, unless it is inside double-quotes (").
+		'/*' (.*|'"*/"') '*/'
+    !!d) All strings of digits with no repeated digits. Hint: Try this problem
+        first with a few digits, such as {0, 1, 2}.
+		(Using modern regex, with no repeats beside one another)
+		/^(?:(?!([0-9])\1).)*$/g
+    !!e) All strings of digits with at most one repeated digit.
+		      ∩
+		(S)--(1)--(F)
+		  \___0___/
+    !!f) All strings of a's and b's with an even number of a's and an odd number
+        of b's.
+		expr -> AA
+			  | B
+		expr2 -> AA
+			   | BB
+		AA -> 'aa' expr
+		B -> 'b' expr2
+		BB -> 'bb' expr2
+		(Assuming first set of B contains one, three, five... 'b's)
+    g) The set of Chess moves, in the informal notation, such as p-k4 or kbpxqn.
+		([KQRBNP] [-x] (([KQ]? [BNR]) | [KQ]) [1-8] ('(' [KQRBNP] ')')?) | ('O-O' ('-O')?)
+    !!h) All strings of a's and b's that do not contain the substring abb.
+		expr -> b expr
+			  | a expr2 expr
+			  | ϵ
+		expr2 -> b a
+			   | a
+
+		or:
+
+		(a(ba|a)|b|$)*
+    i) All strings of a's and b's that do not contain the subsequence abb.
+		b*a*ba*
+Exercise 3.3.6: Write character classes for the following sets of characters:
+    a) The first ten letters (up to "j") in either upper or lower case.
+		[a-jA-J]
+    b) The lowercase consonants.
+		[b-df-hj-np-tv-z]
+    c) The "digits" in a hexadecimal number (choose either upper or lower case
+        for the "digits" above 9)
+		[a-fA-F]
+    d) The characters that can appear at the end of a legitimate English sentence
+        (e.g., exclamation point).
+		[.!?]
+
+Exercise 3.3.7: Note that these regular expressions give all of the following symbols
+    (operator characters) a special meaning:
+
+    \ " . ^ $ [ ] * + ? { } | /
+
+    Their special meaning must be turned off if they are needed to represent
+    themselves in a character string. We can do so by quoting the character within
+    a string of length one or more, e.g., the regular expression "**" matches the
+    string **. We can also get the literal meaning of an operator character by
+    preceding it by a backslash. Thus, the regular expression \*\* also matches the
+    string **. Write a regular expression that matches the string "\.
+
+	\"\\
+
+Exercise 3.3.8: In Lex, a complemented character class represents any character
+    except the ones listed in the character class. We denote a complemented class by
+    using ^ as the first character; this symbol (caret) is not itself part of the
+    class being complemented, unless it is listed within the class itself. Thus,
+    [^A-Za-z] matches any character that is not an uppercase or lowercase letter,
+    and [^\^] represents any character but the caret (or newline, since newline
+    cannot be in any character class). Show that for every regular expression with
+    complemented character classes, there is an equivalent regular expression without
+    complemented character classes.
+
+	[^\^] -> [a-zA-Z0-9@#$%^&*()-=_+[]{}\|;:'",./<>?`~]
+
+!Exercise 3.3.9: The regular expression r{m,n} matches from m to n occurrences of
+    the pattern r. For example, a{1,5} matches a string of one to five a's. Show
+    that for every regular expression containing repetition of operators of this
+    form, there is an equivalent regular expression without repetition operators.
+
+	a{1,5} -> a|aa|aaa|aaaa|aaaaa
+
+!Exercise 3.3.10: The operator ^ matches the left of a line, and $ matches the
+    right end of a line. The operator ^ is also used to introduce complemented
+    character classes, but the context always makes it clear which meaning is
+    intended. For example, ^[^aeiou]*$ matches any complete line that does not
+    contain a lowercase vowel.
+    a) How do you tell which meaning of ^ is intended?
+
+		If the ^ is inside square brackets, it signifies a complemented character
+			class; otherwise, left side of a line.
+
+    b) Can you always replace a regular expression using the ^ and $ operators by
+        an equivalent expression that doesn't not use either of these operators?
+
+		Potentially. Surrounding an expression with '\n' will work if it is not
+			the first or last line. Adding an EOF token to the end of input allows
+			for it to checked, allowing last lines. Adding a 'start of input' token
+			to the beginning allows for the first line to be checked.
+
+!Exercise 3.3.11: The UNIX shell command sh uses the operators in Fig. 3.9 in
+    filename expressions to describe sets of file names. For example, the filename
+    expression *.o matches all file names ending in .o; sort1.? matches all file
+    names of the form sort1.c, where c is any character. Show how sh filename
+    expressions can be replaced by equivalent regular expressions using only the
+    basic union, concatenation and closure operators.
+
+    Figure 3.9: Filename expressions used by the shell command sh
+        EXPRESSION      MATCHES                 EXAMPLE
+        's'             string s literally      '\'
+        \c              character c literally   \'
+        *               any string              *.o
+        ?               any character           sort1.?
+        [s]             any character in s      sort1.[cso]
+
+	'\'			-> \\
+	\'			-> \'
+	*.o			-> .*\.o
+	sort1.?		-> sort1\..
+	sort1.[cso]	-> sort1\.(c|s|o)
+
+!Exercise 3.3.12: SQL allows a rudimentary form of patterns in which two
+    characters have special meaning: underscore (_) stands for any one character
+    and percent-sign (%) stands for any string of 0 or more characters. In addition,
+    the programmer may define any character, say e, to be the escape character,
+    so an e preceding _, %, or another e gives the character that follows its
+    literal meaning. Show how to express any SQL pattern as a regular expression,
+    given that we know which character is the escape character.
+
+	Where e is escape character:
+		(e?[_%])|.
