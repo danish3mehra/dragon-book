@@ -1,0 +1,116 @@
+Exercise 3.5.1: Describe how to make the following modifications to the Lex
+	program of Fig. 3.23:
+	a) Add the keyword while.
+		while {return(WHILE);}
+	b) Change the comparison operators to be the C operators of that kind.
+		"="	{yylval = EQ; return(RELOP);} -> "==" {yylval = EQ; return(RELOP);}
+		"<>" {yylval = NE; return(RELOP);} -> "!=" {yylval = NE; return(RELOP);}
+	c) Allow the underscore (_) as an additional letter.
+		letter [A-Za-z] -> letter [A-Za-z_]
+	!d) Add a new pattern with token STRING. The pattern consists of a double
+		quote ("), any string of characters and a final double-quote. However,
+		if a double-quote appears in the string, it must be escaped by preceding
+		it with a backslash (\), and therefore a backslash in the string must be
+		represented by two backslashes. The lexical value, which is the string
+		without the surrounding double-quotes, and with backslashes used to
+		escape a character removed. Strings are to be installed in a table of
+		strings.
+
+		STRING {\"(\\.|[^"\\])*\"}
+
+		%%
+
+		int installString() {}
+
+	Fig. 3.23: Lex program for the tokens of Fig. 3.12
+
+		Located in file 'lex.l'.
+
+Exercise 3.5.2: Write a Lex program that copies a file, replacing each non-empty
+	sequence of white space by a single blank.
+
+	%{
+		#include <stdio.h>
+	%}
+	%%
+	[ \t]+ fprintf(yyout," ");			/* whitespace */
+	.|\n fprintf(yyout, "%s", yytext);	/* normal chars */
+	%%
+	int yywrap() { return 1; }			/* finish scan */
+	int main(void) {
+		yyin = fopen("in.txt", "r");
+		yyout = fopen("out.txt", "w");
+		yylex();
+		return 0;
+	}
+
+!Exercise 3.5.4: Write a Lex program that converts a file to "Pig latin."
+	Specifically, assume the file is a sequence of words (groups of letters)
+	separated by whitespace. Every time you encounter a word:
+
+	1. If the first letter is a consonant. move it to the end of the word and
+		then add ay.
+	2. If the first letter is a vowel, just add ay to the end of the word.
+
+	All nonletters are copied intact to the output.
+
+	%{
+		#include <stdio.h>
+	%}
+	delim 	[ \t]
+	ws		{delim}+
+	letter	[a-zA-Z]
+	word	{letter}+
+	%%
+	{word} {
+		if (voweled(yytext)) {
+			fprintf(yyout, "%say", yytext);
+		} else {
+			fprintf(yyout, "%s%cay", yytext+1, yytext[0]);}
+		}
+	}
+	{ws} { fprintf(yyout, "%s", yytext); }
+	. { fprintf(yyout, "%s", yytext); }	/* normal chars */
+	%%
+	int yywrap() { return 1; }			/* finish scan */
+	int voweled(char* c) {
+		switch (c[0]) {
+		case 'a': case 'A':
+		case 'e': case 'E':
+		case 'i': case 'I':
+		case 'o': case 'O':
+		case 'u': case 'U':
+			return 1;
+		}
+		return 0;
+	}
+	int main(void) {
+		yyin = fopen("in.txt", "r");
+		yyout = fopen("out.txt", "w");
+		yylex();
+		return 0;
+	}
+
+!Exercise 3.5.5: In SQL, keywords and identifiers are case-insensitive. Write
+	a Lex program that recognises the keywords SELECT, FROM, and WHERE (in any
+	combination of capital and lower-case letters), and token ID, which for the
+	purposes of this exercise you may take to be any sequence of letters and
+	digits beginning with a letter. You need not install identifiers in a
+	symbol table, but tell how the "install" function would differ from that
+	described for case-sensitive identifiers as in Fig. 3.23.
+
+	delim		[ \t\n]
+	ws			{delim}+
+	letter		[A-Za-z]
+	digit		[0-9]
+	id			{letter}({letter}|{digit})*
+	select		[sS][eE][lL][eE][cC][tT]
+	from		[fF][rR][oO][mM]
+	where		[wW][hH][eE][rR][eE]
+	%%
+	{ws}			{/* no action and no return */}
+	{select}	{return(SELECT);}
+	{from}		{return(FROM);}
+	{where}		{return(WHERE);}
+	{id}			{yylval = (int) return(ID);}
+	%%
