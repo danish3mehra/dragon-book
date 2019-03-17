@@ -1,0 +1,293 @@
+Exercise 3.4.1: Provide transition diagrams to recognise the same languages as each
+	of the regular expressions in Exercise 3.3.2.
+
+	Answer is stored in the relevant file in the same directory.
+
+Exercise 3.4.2: Provide transition diagrams to recognise the same languages as each
+	of the regular expressions in Exercise 3.3.5.
+
+	Answer is stored in the relevant file in the same directory.
+
+Exercise 3.4.3: Construct the failure function for the strings:
+	a) abababaab.
+
+		   s 1|2|3|4|5|6|7|8|9
+		f(s) 0|0|1|2|3|4|5|1|2
+
+	b) aaaaaa.
+
+		   s 1|2|3|4|5|6
+		f(s) 0|1|2|3|4|5
+
+	c) abbaabb.
+
+		   s 1|2|3|4|5|6|7
+		f(s) 0|0|0|1|1|2|3
+
+!Exercise 3.4.4: Prove, by induction on s, that the algorithm of Fig. 3.19 correctly
+	computes the failure function.
+
+	Figure 3.19: Algorithm to compute the failure function for keyword b1b2...bn
+
+		t = 0;
+		f(1) = 0;
+		for (s = 1; s < n; s++) {
+			while (t > 0 && b_s+1 != b_t+1) t = f(t);
+			if (b_s+1 == b_t+1) {
+				t = t + 1;
+				f(s+1) = t;
+			} else f(s+1) = 0;
+		}
+
+	Given the failure function for ababaa is indeed:
+
+	   s 1|2|3|4|5|6
+ 	f(s) 0|0|1|2|3|1
+
+	f(1) = 0.
+	t = 0
+	for loop begins:
+		s = 1, t not more than 0, skip while.
+		f(t+1) = f(1) = a, but isn't the same as f(s+1) = f(2) = b
+			f(2) = 0
+	next iteration:
+		s = 2, t not more than 0, skip while
+		f(t+1) = f(1) = a, same as f(s+1) = f(3) = a
+			t = 1
+			f(3) = 1
+	next iteration:
+		s = 3, t more than 0, and f(s+1) = f(t+1), skip while
+		f(t+1) = f(2) = b, same as f(s+1) = f(4) = b
+			t = 2
+			f(4) = 2
+	next iteration:
+		s = 4, t more than 0, and f(s+1) = f(t+1), skip while
+		f(t+1) = f(3) = a, same as f(s+1) = f(5) = a
+			t = 3
+			f(5) = 3
+	next iteration:
+		s = 5, t more than 0, and f(s+1) != f(t+1), t = f(3) = 1
+		f(t+1) not same as f(s+1)
+			f(6) = 1
+
+	which gives 0, 0, 1, 2, 3, 1
+	proving that the function indeed works correctly
+
+!!Exercise 3.4.5: Show that the assignment t = f(t) in line (4) of Fig. 3.19 is
+	executed at most n times. Show that therefore, the entire algorithm takes only
+	O(n) time on a keyword of length n.
+
+	t = f(t) happens within the while-loop which occurs inside of the main for-loop.
+	The for-loop executes a total number of n times, giving t the chance to increase
+	at a maximum of n times, and thus the function has a time complexity of O(n) as
+	a maximum. based on a keyword of length n.
+
+Exercise 3.4.6: Apply Algorithm KMP to test whether keyword ababaa is a substring of:
+	a) abababaab.
+	b) abababbaa.
+
+	Figure 3.20: The KMP algorithm tests whether string a1a2...am contains a single
+		keyword b1b2...bn as a substring in O(m+n) time.
+
+		s=0;
+		for (i = 1; i <= m; i++) {
+			while (s > 0 && a_i != b_s+1) s = f(s);
+			if (a_i == b_s+1) s = s + 1;
+			if (s == n) return "yes";
+		}
+		return "no";
+
+	ababaa in abababaab
+		   s 1|2|3|4|5|6|7|8|9
+		f(s) 0|0|1|2|3|4|5|1|2
+
+		i 1|2|3|4|5|6|7|8|9
+		s 1|2|3|4|5|4|5|6
+		"yes"
+
+	ababaa in abababbaa
+		   s 1|2|3|4|5|6|7|8|9
+		f(s) 0|0|1|2|3|4|0|1|1
+
+		i 1|2|3|4|5|6|7|8|9
+		s 1|2|3|4|5|1|2|3|1
+		"no"
+
+!!Exercise 3.4.7: Show that the algorithm of Fig. 3.20 correctly tells whether the
+	keyword is a substring of the given string. Hint: proceed by induction on i.
+	Show that for all i, the value of s after line (4) is the length of the longest
+	prefix of the keyword that is a sufffix of a1a2...ai.
+
+	aba in ababa
+		   s 1|2|3|4|5
+		f(s) 0|0|1|2|3
+
+		i = 1, s = 1
+		i = 2, s = 2,
+		i = 3, s = 3
+		"yes"
+
+		After line 4, the failure function has already calculated a reduction of the
+		value of t, and after being applied to s, will change it to the length of the
+		longest prefix of the keyword that is a suffix of a1a2..ai.
+
+!!Exercise 3.4.8: Show that the algorithm of Fig. 3.20 runs in time O(m+n),
+	assuming that function f is already computed and its values stored in an array
+	index by s.
+
+	There are two for-loops required for a KMP computation, one that runs from
+	i = 1 to the length n of the string, and one from i = 1 to the length m of the
+	keyword and thus adding these together gives a total computational time complexity
+	of O(m+n).
+
+Exercise 3.4.9: The Fibonacci strings are defined as follows:
+	1. s_1 = b.
+	2. s_2 = a.
+	3. s_k = s_k-1 s_k-2 for k > 2.
+
+	For example, s_3 = ab, s_4 = aba, and s_5 = abaab.
+
+	a) What is the length of s_n?
+		s1 = 1
+		s2 = 1
+		sn = f(n+2) where function f is the regular fibonacci sequence
+
+	b) Construct the failure function for s_6.
+		abaababa
+		   s 1|2|3|4|5|6|7|8
+		f(s) 0|0|1|1|2|3|2|3
+
+	c) Construct the failure function for s_7.
+		abaababaabaab
+		   s 1|2|3|4|5|6|7|8|9|10|11|12|13
+		f(s) 0|0|1|1|2|3|2|3|4| 5| 6| 4| 5
+
+	!!d) Show that the failure function for any s_n can be expressed by
+		f(1) = f(2) = 0, and for 2 < j <= |s_n|, f(j) is j - |s_k-1|, where k is the
+		largest integer such that |s_k| <= j + 1.
+
+		f(1) is always 0
+		f(2) is 0 if it isn't the same as f(1), in which case we know it isn't
+
+		f(3) = 3 - |s_k-1| where k = 4
+		     = 3 - s_3
+			 = 3 - 2
+			 = 1
+		f(4) = 4 - |s_k-1| where k = 5
+		     = 4 - s_4
+			 = 4 - 3
+			 = 1
+		and so on...
+
+	!!e) In the KMP algorithm, what is the largest number of consecutive applications
+		of the failure function, when we try to determine whether keyword s_k
+		appears in text string s_k+1?
+
+		The largest number of consecutive applications of the failure function whereby
+			it is called within the while loop:
+				while (s > 0 && a_i != b_s+1) s = f(s);
+			is 2.
+
+!Exercise 3.4.10: Modify the algorithm of Fig. 3.19 to compute the failure function
+	for general tries. Hint: The major difference is that we cannot simply test for
+	equality or inequality of b_s+1 and b_t+1 in lines (4) and (5) of Fig. 3.19.
+	Rather, from any state there may be several transitions out on several characters,
+	as there are transitions on both e and i from state 1 in Fig. 3.21. Any of those
+	transitions could lead to a state that represents the longest suffix that is also
+	a prefix.
+
+	Figure 3.21: Trie for keywords he, she, his, hers.
+
+	(0) -h-> (1) -e-> ((2)) -r-> (8) -s-> ((9))
+	 |        |
+	 |        i
+	 s         \
+	 |          (6) -s-> ((7))
+	 |
+	  \
+	   (3) -h-> (4) -e-> ((5))
+
+	One way to keep O(sum of tries) time complexity is literally to just do it once
+		per keyword (I think).
+
+	func failure(b[]) {
+		for (b in b[]) {
+			t = 0;
+			f(1) = 0;
+			for (s = 1; s < n; s++) {
+			   while (t > 0 && b_s+1 != b_t+1) t = f(t);
+			   if (b_s+1 == b_t+1) {
+				   t = t + 1;
+				   f(s+1) = t;
+			   } else f(s+1) = 0;
+			}
+		}
+	}
+
+
+
+Exercise 3.4.11: Construct the tries and compute the failure function for the
+	following sets of keywords:
+	a) aaa, abaaa, and ababaaa.
+		(0) -a-> (1) -a-> (2) -a-> ((10))
+		          |
+				  b
+				   \
+				    (3) -a-> (4) -a-> (5) -> ((11))
+				              |
+							  b
+							   \
+							    (6) -a-> (7) -a-> (8) -a-> ((9))
+
+	aaa:		0|1|2
+	abaaa:		0|0|1|1|1
+	ababaaa:	0|0|1|2|3|1|1
+
+	b) all, fall, fatal, llama, and lame.
+		(0) -a-> (1) -l-> (17) -l-> ((18))
+		 |\
+		 | l
+		 |  \
+		 |   (2) -a-> (3) -m-> (15) -e-> ((16))
+		 f    |
+		 |    l
+		 |     \
+		 |      (11) -a-> (12) -m-> (13) -a-> ((14))
+		 |
+		(4) -a-> (5) -l-> (6) -l-> ((10))
+		            |
+				    t
+					 \
+					  (7) -a-> (8) -l-> ((9))
+
+	all:	0|0|0
+	fall:	0|0|0|0
+	lame:	0|0|0|0
+	fatal:	0|0|0|0|0
+	llama:	0|1|0|0|0
+
+	c) pipe, pet, item, temper, and perpetual.
+		(0) -i-> (1) -t-> (21) -e-> (22) -m-> ((23))
+		 |\
+		 | p
+		 |  \
+		 |   (2) -e-> (12) -r-> (14) -p-> (15) -e-> (16) -t-> (17) -u-> (18) -a-> (19) -l-> ((20))
+		 |    |        |
+		 t    |        t
+		 |    i        |
+		 |    |      ((13))
+		 |    |
+		 |   (3) -p-> (4) -e-> ((11))
+		 |
+		(5) -e-> (6) -m-> (7) -p-> (8) -e-> (9) -r-> ((10))
+
+	pet:		0|0|0
+	item:		0|0|0|0
+	temper:		0|0|0|0|0|0
+	pipe:		0|0|1|0
+	perpetual:	0|0|0|1|2|0|0|0|0
+
+!Exercise 3.4.12: Show that your algorithm from Exercise 3.4.10 still runs in time
+	that is linear in the sum of the lengths of the keywords.
+
+	Each iteration is f(m) and thus adding them all together gives f(sum of all ms)
