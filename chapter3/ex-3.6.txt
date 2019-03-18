@@ -1,0 +1,62 @@
+!Exercise 3.6.1: Figure 3.19 in the exercises of Section 3.4 computes the failure
+	function for the KMP algorithm. Show how, given that failure function, we can
+	construct, from a keyword b1b2...bn an n+1 - state DFA that recognises
+		.*b1b2...bn
+	where the dot stands for "any character". Moreover, this DFA can be constructed
+	in O(n) time.
+
+	Answer is stored in the relevant file in the same directory.
+
+Exercise 3.6.2: Design finite automata (deterministic or nondeterministic) for
+	each of the languages of Exercise 3.3.5.
+
+	These have already been stored in the relevant file for Exercise 3.4.
+
+Exercise 3.6.3: For the NFA of Fig. 3.29, indicate all the paths labeled aabb.
+	Does the NFA accept aabb?
+
+	Figure 3.29: NFA for Exercise 3.6.3
+		Stored in the relevant figures .pdf.
+
+	(0) -a-> (0) -a-> (0) -b-> (0) -b-> (0)
+	(0) -a-> (0) -a-> (0) -b-> (0) -b-> (1)
+	(0) -a-> (0) -a-> (0) -b-> (1) -b-> (1)
+	(0) -a-> (0) -a-> (1) -b-> (2) -b-> (2)
+	...
+	(0) -a-> (1) -a-> (2) -b-> (2) -b-> ((3))
+
+	Yes it does.
+
+Exercise 3.6.4: Repeat Exercise 3.6.3 for the NFA of Fig. 3.30.
+
+	Figure 3.30: NFA for Exercise 3.6.4.
+		Stored in the relevant figures .pdf.
+
+	There are an infinite amount of possible paths.
+
+	(0) -a-> (1) -ϵ-> (0) -a-> (1) -b-> (2) -b-> ((3))
+
+	As shown, it also accepts.
+
+Exercise 3.6.5: Give the translation tables for the NFA of:
+	a) Exercise 3.6.3.
+			a		b		ϵ
+		0	{0,1}	{0}		Ø
+		1	{1,2}	{1}		Ø
+		2	{2}		{2,3}	{0}
+		3	Ø		Ø		Ø
+
+	b) Exercise 3.6.4.
+			a		b		ϵ
+		0	{1}		Ø		{3}
+		1	Ø		{2}		Ø
+		2	Ø		{3}		{1}
+		3	{0}		Ø		{2}
+
+	c) Figure 3.26.
+			a		b		ϵ
+		0	Ø		Ø		{1,3}
+		1	{2}		Ø		Ø
+		2	{2}		Ø		Ø
+		3	Ø		{4}		Ø
+		4	Ø		{4}		Ø
